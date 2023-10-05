@@ -1,0 +1,74 @@
+/*
+ * main.c
+ *
+ *  Created on: Sep 6, 2023
+ *      Author: SIGMA
+ */
+#include"uart.h"
+#include"gpio.h"
+#include"timer1.h"
+#include<avr/io.h>
+
+#include"lcd.h"
+
+#define SAFE_DISTANCE	51
+#define MCU2_READY		0x45
+
+void timerTick();
+uint8 volatile g_ledTicks = 0;
+uint8 volatile g_buzzerTicks = 0;
+
+uint8 g_distance;
+
+int main()
+{
+	Timer1_ConfigType timerConfig;
+	/* UART configuration and initialization */
+	UART_configType uartConfig;
+	uartConfig.baudRate 		= 9600;
+	uartConfig.character_size 	= EIGHT_BITS;
+	uartConfig.parity 			= DISABLED;
+	uartConfig.stop_bits 		= ONE_BIT;
+	UART_init(&uartConfig);
+	/* Timer1 configuration and initialization */
+	timerConfig.mode 		  = COMPARE;
+	timerConfig.initial_value = 0;
+	timerConfig.prescaler 	  = F_CPU_8;
+	timerConfig.compare_value = 10000;
+	Timer1_setCallBack(timerTick);
+	Timer1_init(&timerConfig);
+
+	SREG |= (1<<7);
+
+	UART_sendByte(MCU2_READY);
+
+	for(;;)
+	{
+		g_distance = UART_receiveByte();
+		if(g_distance != SAFE_DISTANCE)
+		{
+			GPIO_writePin(PORTA_ID, PIN0_ID, LOGIC_HIGH);
+		}
+		else
+		{
+			GPIO_writePin(PORTA_ID, PIN0_ID, LOGIC_LOW);
+		}
+	}
+}
+
+
+void timerTick()
+{
+	g_ledTicks++;
+	g_buzzerTicks++;
+	if(g_ledTicks == 50)
+	{
+
+		g_ledTicks = 0;
+	}
+	if(g_buzzerTicks == g_distance)
+	{
+
+		g_buzzerTicks = 0;
+	}
+}

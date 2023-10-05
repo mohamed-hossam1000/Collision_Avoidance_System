@@ -1,0 +1,26 @@
+/*
+ * min.c
+ *
+ *  Created on: Sep 6, 2023
+ *      Author: Mohamed
+ */
+#include"ultrasonic.h"
+#include"uart.h"
+#include<avr/io.h>
+
+int main()
+{
+	UART_configType uartConfig;
+	uartConfig.baudRate = 9600;
+	uartConfig.character_size = EIGHT_BITS;
+	uartConfig.parity = DISABLED;
+	uartConfig.stop_bits = ONE_BIT;
+	UART_init(&uartConfig);
+	Ultrasonic_init();
+
+	SREG |= (1<<7);
+	for(;;)
+	{
+
+	}
+}

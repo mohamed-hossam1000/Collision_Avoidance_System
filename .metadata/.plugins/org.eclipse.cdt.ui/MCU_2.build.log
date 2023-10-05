@@ -1,0 +1,34 @@
+14:29:03 **** Incremental Build of configuration Debug for project MCU_2 ****
+make all 
+Building file: ../MCU2.c
+Invoking: AVR Compiler
+avr-gcc -Wall -g2 -gstabs -O0 -fpack-struct -fshort-enums -ffunction-sections -fdata-sections -std=gnu99 -funsigned-char -funsigned-bitfields -mmcu=atmega32 -DF_CPU=16000000UL -MMD -MP -MF"MCU2.d" -MT"MCU2.o" -c -o "MCU2.o" "../MCU2.c"
+Finished building: ../MCU2.c
+ 
+Building target: MCU_2.elf
+Invoking: AVR C Linker
+avr-gcc -Wl,-Map,MCU_2.map -mmcu=atmega32 -o "MCU_2.elf"  ./MCU2.o ./buzzer.o ./gpio.o ./led.o ./timer1.o ./uart.o   
+Finished building target: MCU_2.elf
+ 
+Invoking: AVR Create Extended Listing
+avr-objdump -h -S MCU_2.elf  >"MCU_2.lss"
+Finished building: MCU_2.lss
+ 
+Invoking: Print Size
+avr-size --format=avr --mcu=atmega32 MCU_2.elf
+AVR Memory Usage
+----------------
+Device: atmega32
+
+Program:    3348 bytes (10.2% Full)
+(.text + .data + .bootloader)
+
+Data:          5 bytes (0.2% Full)
+(.data + .bss + .noinit)
+
+
+Finished building: sizedummy
+ 
+
+14:29:03 Build Finished. 0 errors, 0 warnings. (took 285ms)
+

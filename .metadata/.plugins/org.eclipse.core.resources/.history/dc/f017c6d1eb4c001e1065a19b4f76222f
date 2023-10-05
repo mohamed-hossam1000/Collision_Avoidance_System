@@ -1,0 +1,38 @@
+/*
+ * min.c
+ *
+ *  Created on: Sep 6, 2023
+ *      Author: Mohamed
+ */
+#include"ultrasonic.h"
+#include"uart.h"
+#include<avr/io.h>
+
+#define SAFE_DISTANCE 51
+
+int main()
+{
+	uint16 distance;
+
+	UART_configType uartConfig;
+	uartConfig.baudRate = 9600;
+	uartConfig.character_size = EIGHT_BITS;
+	uartConfig.parity = DISABLED;
+	uartConfig.stop_bits = ONE_BIT;
+	UART_init(&uartConfig);
+
+	Ultrasonic_init();
+
+	SREG |= (1<<7);
+
+	while(UART_receiveByte() != MCU2_READY);
+
+	for(;;)
+	{
+		distance = Ultrasonic_readDistance();
+		if(distance >= SAFE_DISTANCE)
+		{
+			UART_sendByte(SAFE_DISTANCE);
+		}
+	}
+}

@@ -1,0 +1,42 @@
+/*
+ * main.c
+ *
+ *  Created on: Sep 6, 2023
+ *      Author: SIGMA
+ */
+#include"uart.h"
+#include"gpio.h"
+#include"lcd.h"
+
+#define SAFE_DISTANCE	51
+#define MCU2_READY		0x45
+
+int main()
+{
+	uint16 distance;
+	/* UART configuration and initialization */
+	UART_configType uartConfig;
+	uartConfig.baudRate = 9600;
+	uartConfig.character_size = EIGHT_BITS;
+	uartConfig.parity = DISABLED;
+	uartConfig.stop_bits = ONE_BIT;
+	UART_init(&uartConfig);
+
+	LCD_init();
+	GPIO_setupPinDirection(PORTA_ID, PIN0_ID, PIN_OUTPUT);
+
+	UART_sendByte(MCU2_READY);
+
+	for(;;)
+	{
+		distance = UART_receiveByte();
+		if(distance != SAFE_DISTANCE)
+		{
+			GPIO_writePin(PORTA_ID, PIN0_ID, LOGIC_HIGH);
+		}
+		else
+		{
+			GPIO_writePin(PORTA_ID, PIN0_ID, LOGIC_LOW);
+		}
+	}
+}

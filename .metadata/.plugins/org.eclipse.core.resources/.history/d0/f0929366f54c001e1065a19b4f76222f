@@ -1,0 +1,29 @@
+/*
+ * main.c
+ *
+ *  Created on: Sep 6, 2023
+ *      Author: SIGMA
+ */
+#include"uart.h"
+#include"lcd.h"
+
+int main()
+{
+	/* UART configuration and initialization */
+	UART_configType uartConfig;
+	uartConfig.baudRate = 9600;
+	uartConfig.character_size = EIGHT_BITS;
+	uartConfig.parity = DISABLED;
+	uartConfig.stop_bits = ONE_BIT;
+	UART_init(&uartConfig);
+
+	LCD_init();
+
+	UART_sendByte(0x45);
+
+	for(;;)
+	{
+		LCD_integerToString(UART_receiveByte());
+		LCD_moveCursor(0, 0);
+	}
+}
